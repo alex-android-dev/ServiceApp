@@ -2,6 +2,7 @@ package com.example.servicesapp
 
 import android.app.job.JobParameters
 import android.app.job.JobService
+import android.content.Intent
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,12 +28,23 @@ class MyJobService : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         log("onStartJob")
         coroutineScope.launch {
-            for (i in 0 until 100) {
-                delay(1000)
-                log("Timer $i")
+            var workItem = params?.dequeueWork()
+            while (workItem != null) {
+                // достаем сервис из стека
+                val page = workItem.intent?.getIntExtra(PAGE, 0)
+                // получаем номер страницы
+                // будет работать до тех пор, пока dequeueWork не вернёт null
+
+                for (i in 0 until 5) {
+                    delay(1000)
+                    log("Timer $i, Page: $page")
+                }
+                params?.completeWork(workItem)
+                // завершаем сервис, который находится в очереди
+                workItem = params?.dequeueWork()
             }
-            jobFinished(params, false)
         }
+        jobFinished(params, false)
         return true
     }
 
@@ -47,6 +59,13 @@ class MyJobService : JobService() {
 
     companion object {
         const val JOB_ID = 55
+        private const val PAGE = "page"
+
+        fun newIntent(page: Int): Intent {
+            return Intent().apply {
+                putExtra(PAGE, page)
+            }
+        }
     }
 
 }
