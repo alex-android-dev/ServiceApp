@@ -1,11 +1,7 @@
 package com.example.servicesapp
 
-import android.app.Service
 import android.app.job.JobParameters
 import android.app.job.JobService
-import android.content.Context
-import android.content.Intent
-import android.os.IBinder
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,13 +25,13 @@ class MyJobService : JobService() {
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        log("onStartCommand")
+        log("onStartJob")
         coroutineScope.launch {
             for (i in 0 until 100) {
                 delay(1000)
                 log("Timer $i")
             }
-            jobFinished(params, true)
+            jobFinished(params, false)
         }
         return true
     }
@@ -46,7 +42,11 @@ class MyJobService : JobService() {
     }
 
     private fun log(msg: String) {
-        Log.d("SERVICE_TAG", "MyService $msg")
+        Log.d("SERVICE_TAG", "MyJobService $msg")
+    }
+
+    companion object {
+        const val JOB_ID = 55
     }
 
 }

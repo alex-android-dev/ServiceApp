@@ -1,6 +1,9 @@
 package com.example.servicesapp
 
 import android.Manifest
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -22,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         askPermission()
 
         binding.simpleService.setOnClickListener {
-            stopService(MyForegroundService.newIntent(this))
             startService(MyService.newIntent(this, 25))
         }
 
@@ -32,6 +34,25 @@ class MainActivity : AppCompatActivity() {
 
         binding.intentService.setOnClickListener {
             ContextCompat.startForegroundService(this, MyIntentService.newIntent(this))
+        }
+
+        binding.jobScheduler.setOnClickListener {
+            // указываем какой сервис нам нужен
+            val componentName = ComponentName(this, MyJobService::class.java)
+
+            // содержит все требования для нашего сервиса
+            // передаём для него ID сервиса
+            // устанавливаем ограничения
+            val jobInfo = JobInfo.Builder(MyJobService.JOB_ID, componentName)
+                .setRequiresCharging(true) // Устройство, которое заряжается
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) // Если устройство подключено к вай фай
+                .setPersisted(true) // Запуск сервиса после перезапуска устройства
+                .build()
+
+            // планируем выполнение сервиса
+            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+
+            jobScheduler.schedule(jobInfo)
         }
 
     }
