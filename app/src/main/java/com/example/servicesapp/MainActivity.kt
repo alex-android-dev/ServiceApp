@@ -6,7 +6,6 @@ import android.app.job.JobScheduler
 import android.app.job.JobWorkItem
 import android.content.ComponentName
 import android.content.pm.PackageManager
-import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.servicesapp.databinding.ActivityMainBinding
-import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,7 +51,6 @@ class MainActivity : AppCompatActivity() {
 
             val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
 
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val intent = MyJobService.newIntent(page++)
                 // Создаем интент, который будет содержать значение страницы
@@ -62,7 +59,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 startService(MyIntentServiceSecond.newIntent(this, page++))
             }
+        }
 
+        binding.jobIntentService.setOnClickListener {
+            MyJobIntentService.enqueue(this, page++)
         }
     }
 
