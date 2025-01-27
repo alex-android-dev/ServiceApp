@@ -48,7 +48,7 @@ class MyIntentServiceSecond : IntentService(NAME_INTENT_SERVICE) {
 
 
     companion object {
-        private const val NAME_INTENT_SERVICE = "MyIntentService"
+        private const val NAME_INTENT_SERVICE = "MyIntentServiceSecond"
         private const val PAGE = "page"
 
         fun newIntent(context: Context, page: Int): Intent {
