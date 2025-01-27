@@ -48,16 +48,21 @@ class MainActivity : AppCompatActivity() {
 
             val jobInfo = JobInfo.Builder(MyJobService.JOB_ID, componentName)
 //                .setRequiresCharging(true)
-//                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build()
 
             val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
 
-            val intent = MyJobService.newIntent(page++)
-            // Создаем интент, который будет содержать значение страницы
 
-            jobScheduler.enqueue(jobInfo, JobWorkItem(intent))
-            // кладем сервис в очередь
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val intent = MyJobService.newIntent(page++)
+                // Создаем интент, который будет содержать значение страницы
+                jobScheduler.enqueue(jobInfo, JobWorkItem(intent))
+                // кладем сервис в очередь
+            } else {
+                startService(MyIntentServiceSecond.newIntent(this, page++))
+            }
+
         }
     }
 
