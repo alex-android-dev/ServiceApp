@@ -49,10 +49,14 @@ class MainActivity : AppCompatActivity() {
                 .setPersisted(true) // Запуск сервиса после перезапуска устройства
                 .build()
 
-            // планируем выполнение сервиса
-            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
 
-            jobScheduler.schedule(jobInfo)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // планируем выполнение сервиса
+                val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+                jobScheduler.schedule(jobInfo)
+            } else {
+            }
+
         }
 
     }
