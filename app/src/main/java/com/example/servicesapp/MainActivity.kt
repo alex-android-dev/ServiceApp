@@ -6,12 +6,15 @@ import android.app.job.JobScheduler
 import android.app.job.JobWorkItem
 import android.content.ComponentName
 import android.content.pm.PackageManager
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.servicesapp.databinding.ActivityMainBinding
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,19 +43,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.jobScheduler.setOnClickListener {
+            Log.d("jobScheduler", "click")
             val componentName = ComponentName(this, MyJobService::class.java)
 
             val jobInfo = JobInfo.Builder(MyJobService.JOB_ID, componentName)
-                .setRequiresCharging(true)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+//                .setRequiresCharging(true)
+//                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build()
 
             val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
 
             val intent = MyJobService.newIntent(page++)
-            jobScheduler.enqueue(jobInfo, JobWorkItem(intent))
-        }
+            // Создаем интент, который будет содержать значение страницы
 
+            jobScheduler.enqueue(jobInfo, JobWorkItem(intent))
+            // кладем сервис в очередь
+        }
     }
 
     private fun askPermission() {
