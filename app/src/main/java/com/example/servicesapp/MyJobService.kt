@@ -43,9 +43,6 @@ class MyJobService : JobService() {
                 params?.completeWork(workItem) // завершаем сервис, который находится в очереди
                 workItem = params?.dequeueWork()
             }
-
-            jobFinished(params, false)
-            // Весь сервис завершил свою работу
         }
         return true
     }
