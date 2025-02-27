@@ -55,7 +55,8 @@ class MyIntentService : IntentService(NAME_INTENT_SERVICE) {
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID) // Создаём уведомление
+        val notification =
+            NotificationCompat.Builder(this, CHANNEL_ID) // Создаём уведомление
             .setContentTitle("ForegroundService Title") // Заголовок
             .setContentText("ForegroundService Text") // Текст
             .setSmallIcon(R.drawable.ic_launcher_background) // Передаем иконку

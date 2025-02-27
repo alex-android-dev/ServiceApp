@@ -69,10 +69,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.workManager.setOnClickListener {
             val workManager = WorkManager.getInstance(application)
+
             workManager.enqueueUniqueWork(
                 MyWorker.WORK_NAME,
                 ExistingWorkPolicy.APPEND,
-                MyWorker.makeRequest(page)
+                MyWorker.makeRequest(page++)
             )
         }
     }

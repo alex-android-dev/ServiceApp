@@ -36,7 +36,6 @@ class MyWorker(
 
     companion object {
         private const val PAGE = "page"
-
         const val WORK_NAME = "work name"
 
         // создаём Request
