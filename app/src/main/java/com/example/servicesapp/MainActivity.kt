@@ -1,12 +1,15 @@
 package com.example.servicesapp
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.app.job.JobWorkItem
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -14,6 +17,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.servicesapp.databinding.ActivityMainBinding
@@ -95,6 +99,22 @@ class MainActivity : AppCompatActivity() {
                 ExistingWorkPolicy.APPEND,
                 MyWorker.makeRequest(page++)
             )
+        }
+
+        binding.alarmManager.setOnClickListener {
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            val calendar = Calendar.getInstance() // устанавливаем текущее время
+            calendar.add(Calendar.SECOND, 30) // Время на 30 секунд больше чем у объекта calendar
+            val intent = AlarmReceiver.newIntent(this)
+            val pendingIntent = PendingIntent.getBroadcast(
+                this, 100, intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+            // RTC_WAKEUP - разбудит устройство если оно находится в спящем режиме
+            // Передаем текущее время
+            // Передаем обертку обычного интенте Pending Intent
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+
         }
     }
 
