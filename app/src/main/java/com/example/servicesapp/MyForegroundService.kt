@@ -1,11 +1,11 @@
 package com.example.servicesapp
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -24,11 +24,13 @@ class MyForegroundService : Service() {
 
     private val notificationManager by lazy { getSystemService(NOTIFICATION_SERVICE) as NotificationManager }
 
-    override fun onBind(p0: Intent?): IBinder? {
-        TODO("Not yet implemented")
+    var onProgressChanged: ((Int) -> Unit)? = null
+
+    // Чтобы активити подписалась на сервис
+    override fun onBind(p0: Intent?): IBinder {
+        log("onBind")
+        return LocalBinder()
     }
-
-
 
     override fun onCreate() {
         super.onCreate()
@@ -52,6 +54,7 @@ class MyForegroundService : Service() {
                     .setProgress(100, i, false)
                     .build()
                 notificationManager.notify(NOTIFICATION_ID, notification)
+                onProgressChanged?.invoke(i) // установили сюда слушатель и можем реагировать на изменения
                 log("Timer $i")
             }
             stopSelf()
@@ -83,6 +86,10 @@ class MyForegroundService : Service() {
             .setSmallIcon(R.drawable.ic_launcher_background) // Передаем иконку
             .setOnlyAlertOnce(true)
             .setProgress(100, 0, true)
+
+    inner class LocalBinder : Binder() {
+        fun getService() = this@MyForegroundService
+    }
 
 
     companion object {
